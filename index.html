@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8f4">
+    <title>Superset — make your workout work for you</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Superset home"><span class="brand-mark">S<span>✳</span></span><span>superset<span class="brand-dot">.</span></span></a>
+      <nav aria-label="Main navigation"><a class="nav-active" href="#workout">My workout</a><a href="#history">Activity</a></nav>
+      <div class="topbar-right"><span class="ready-dot"></span> YOUR SPACE TO GET STRONGER</div>
+    </header>
+
+    <main>
+      <section class="intro">
+        <div>
+          <div class="eyebrow"><span class="sparkle">✳</span> YOUR WORKOUT, YOUR WAY</div>
+          <h1>Make today<br><em>count.</em></h1>
+          <p>Good workouts don’t need to be complicated. Let’s make the most of what you’ve got.</p>
+          <a class="text-link" href="#workout">LET’S GET TO WORK <span>↘</span></a>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+          <span class="art-star star-one">✳</span><span class="art-star star-two">✦</span>
+          <div class="art-label">A LITTLE STRONGER<br>EVERY DAY <span>↗</span></div>
+          <div class="dumbbell"><span class="weight outer left"></span><span class="weight inner left"></span><span class="bar"></span><span class="weight inner right"></span><span class="weight outer right"></span></div>
+          <span class="art-caption">SHOW UP FOR YOURSELF.</span>
+        </div>
+      </section>
+
+      <section class="equipment-section" aria-labelledby="equipment-title">
+        <div class="section-heading">
+          <div><div class="eyebrow"><span class="step-number">01</span> THE SETUP</div><h2 id="equipment-title">What are you working with?</h2><p>Select what you have available. We’ll take it from there.</p></div>
+          <span class="equipment-note"><span>✳</span> NO EQUIPMENT? NO PROBLEM.</span>
+        </div>
+        <div class="equipment-row" id="equipment"></div>
+        <div class="equipment-footer"><span>Bodyweight exercises are always included.</span><button class="button button-dark" id="generate" type="button">Build my workout <span>↗</span></button></div>
+      </section>
+
+      <section class="workout-section" id="workout" aria-labelledby="workout-title">
+        <div class="section-heading workout-heading">
+          <div><div class="eyebrow"><span class="step-number">02</span> LET’S MOVE</div><h2 id="workout-title">Your workout <span class="heading-sparkle">✳</span></h2><p>A little progress is still progress. You’ve got this.</p></div>
+          <div class="workout-meta"><span class="meta-icon">◷</span><div><strong>FULL BODY</strong><small>MADE FOR YOUR SETUP</small></div></div>
+        </div>
+        <div class="progress-panel">
+          <div><span class="progress-label">TODAY’S PROGRESS</span><strong id="progress-text">0 of 0 sets complete</strong></div>
+          <div class="progress-track" role="progressbar" aria-label="Workout progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-fill"></div></div>
+          <span id="progress-percent">0%</span>
+        </div>
+        <div class="exercise-list" id="exercise-list"></div>
+        <div class="finish-row"><div><strong>That’s a wrap?</strong><span>Save your completed sets to your activity.</span></div><button class="button button-dark" id="finish" type="button">Finish workout <span>↗</span></button></div>
+      </section>
+
+      <section class="history-section" id="history" aria-labelledby="history-title">
+        <div><div class="eyebrow"><span class="step-number">03</span> KEEP SHOWING UP</div><h2 id="history-title">The work adds up.</h2><p>Your completed workouts live here. Every set is a step forward.</p></div>
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </main>
+    <footer><span class="footer-brand">superset<span>.</span></span><span>MADE FOR THE WORK IN PROGRESS ✳</span><span>ONE SET AT A TIME.</span></footer>
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+  </body>
+</html>
