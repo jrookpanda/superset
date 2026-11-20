@@ -980,7 +980,8 @@ const generateInitialDemoLogs = () => {
 // ============================================================================
 const playTimerBeep = () => {
   try {
-    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    const AudioCtx =
+      window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!AudioCtx) return;
     const ctx = new AudioCtx();
     const now = ctx.currentTime;
