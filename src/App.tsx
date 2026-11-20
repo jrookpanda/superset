@@ -28,6 +28,38 @@ import {
   Layers
 } from 'lucide-react';
 
+type WorkoutSet = {
+  weight: number | '';
+  reps: number | '';
+  done: boolean;
+};
+
+type WorkoutLog = {
+  date: string;
+  dayId: string;
+  slotId: string;
+  exerciseId: string;
+  sets: WorkoutSet[];
+};
+
+type WorkoutLogs = Record<string, WorkoutLog>;
+
+type WeeklyStats = {
+  weekStart: string;
+  datesSet: Set<string>;
+  dayIdsSet: Set<string>;
+  totalVolumeKg: number;
+  totalSets: number;
+  totalReps: number;
+  exerciseMaxes: Record<string, number>;
+};
+
+type LiftPoint = {
+  date: string;
+  maxKg: number;
+  volumeKg: number;
+};
+
 // ============================================================================
 // 1. EXERCISE DATABASE & TAILORED GYM ALTERNATIVES
 // ============================================================================
@@ -920,7 +952,7 @@ const getWeekKey = (dateStr) => {
   return monday.toISOString().split('T')[0];
 };
 
-const generateInitialDemoLogs = () => {
+const generateInitialDemoLogs = (): WorkoutLogs => {
   // Generates realistic progression across Week -2, Week -1, and current week
   const demoEntries = [
     // --- TWO WEEKS AGO (14 to 9 days ago) ---
@@ -967,7 +999,7 @@ const generateInitialDemoLogs = () => {
     { date: getDateString(1), dayId: 'day5', slotId: 'd5_b1', exerciseId: 'cable_pullover', sets: [{ weight: 22.5, reps: 14, done: true }, { weight: 22.5, reps: 13, done: true }, { weight: 22.5, reps: 12, done: true }] }
   ];
 
-  const logMap = {};
+  const logMap: WorkoutLogs = {};
   demoEntries.forEach((entry) => {
     const key = `${entry.date}_${entry.slotId}`;
     logMap[key] = entry;
@@ -1037,7 +1069,7 @@ export default function App() {
   const [activeDate, setActiveDate] = useState(() => getDateString(0));
 
   // --- Custom Exercise Swaps: { [slotId]: exerciseId } ---
-  const [customSwaps, setCustomSwaps] = useState(() => {
+  const [customSwaps, setCustomSwaps] = useState<Record<string, string>>(() => {
     try {
       const saved = localStorage.getItem('hd_swaps');
       return saved ? JSON.parse(saved) : {};
@@ -1051,7 +1083,7 @@ export default function App() {
   }, [customSwaps]);
 
   // --- Workout Logs: { [`${date}_${slotId}`]: { date, dayId, slotId, exerciseId, sets: [{ weight, reps, done }] } } ---
-  const [logs, setLogs] = useState(() => {
+  const [logs, setLogs] = useState<WorkoutLogs>(() => {
     try {
       const saved = localStorage.getItem('hd_logs');
       if (saved) return JSON.parse(saved);
@@ -1118,12 +1150,15 @@ export default function App() {
   };
 
   // --- Helper: Weight Conversion ---
-  const displayWeight = (kgVal) => {
+  function displayWeight(kgVal: number): number;
+  function displayWeight(kgVal: '' | null | undefined): '';
+  function displayWeight(kgVal: number | string | null | undefined): number | '';
+  function displayWeight(kgVal: number | string | null | undefined): number | '' {
     if (kgVal === '' || kgVal === null || kgVal === undefined) return '';
     const num = Number(kgVal);
     if (isNaN(num)) return '';
     return unit === 'kg' ? num : Math.round(num * 2.20462 * 10) / 10;
-  };
+  }
 
   const toStorageKg = (inputVal) => {
     if (inputVal === '' || inputVal === null || inputVal === undefined) return '';
@@ -1157,7 +1192,7 @@ export default function App() {
     });
   };
 
-  const updateSetField = (dayId, slotId, exerciseId, defaultSetCount, setIdx, field, rawValue) => {
+  const updateSetField = (dayId, slotId, exerciseId, defaultSetCount, setIdx, field, rawValue = '') => {
     const key = `${activeDate}_${slotId}`;
     const currentSets = getSlotSets(dayId, slotId, exerciseId, defaultSetCount);
     const updatedSets = currentSets.map((s, idx) => {
@@ -1192,7 +1227,7 @@ export default function App() {
   };
 
   // --- Swap Exercise Handler ---
-  const handleSelectSwap = (slotId, newExerciseId, dayId, defaultSetCount) => {
+  const handleSelectSwap = (slotId, newExerciseId) => {
     setCustomSwaps((prev) => ({
       ...prev,
       [slotId]: newExerciseId
@@ -1225,7 +1260,7 @@ export default function App() {
   };
 
   // --- JSON Export / Import / Clear Demo ---
-  const fileInputRef = useRef(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleExportJSON = () => {
     const payload = {
@@ -1250,7 +1285,9 @@ export default function App() {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const parsed = JSON.parse(event.target.result);
+        const result = event.target?.result;
+        if (typeof result !== 'string') throw new Error('Invalid JSON backup file');
+        const parsed = JSON.parse(result);
         if (parsed.logs) setLogs(parsed.logs);
         if (parsed.customSwaps) setCustomSwaps(parsed.customSwaps);
         if (parsed.unit) setUnit(parsed.unit);
@@ -1290,7 +1327,7 @@ export default function App() {
     const completedEntries = allEntries.filter((e) => e.sets && e.sets.some((s) => s.done));
 
     // Group by ISO week (Monday-based)
-    const weeksMap = {};
+    const weeksMap: Record<string, WeeklyStats> = {};
     completedEntries.forEach((entry) => {
       const wk = getWeekKey(entry.date);
       if (!weeksMap[wk]) {
@@ -1363,7 +1400,7 @@ export default function App() {
     });
 
     // Lift-specific progression points
-    const liftHistoryMap = {};
+    const liftHistoryMap: Record<string, LiftPoint> = {};
     completedEntries
       .filter((e) => e.exerciseId === selectedLiftChart)
       .forEach((e) => {
