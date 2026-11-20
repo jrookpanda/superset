@@ -1160,7 +1160,7 @@ export default function App() {
     return unit === 'kg' ? num : Math.round(num * 2.20462 * 10) / 10;
   }
 
-  const toStorageKg = (inputVal) => {
+  const toStorageKg = (inputVal: string): number | '' => {
     if (inputVal === '' || inputVal === null || inputVal === undefined) return '';
     const num = Number(inputVal);
     if (isNaN(num)) return '';
@@ -1192,7 +1192,7 @@ export default function App() {
     });
   };
 
-  const updateSetField = (dayId, slotId, exerciseId, defaultSetCount, setIdx, field, rawValue = '') => {
+  const updateSetField = (dayId, slotId, exerciseId, defaultSetCount, setIdx, field, rawValue: string = '') => {
     const key = `${activeDate}_${slotId}`;
     const currentSets = getSlotSets(dayId, slotId, exerciseId, defaultSetCount);
     const updatedSets = currentSets.map((s, idx) => {
@@ -1201,7 +1201,7 @@ export default function App() {
         return { ...s, weight: rawValue === '' ? '' : toStorageKg(rawValue) };
       }
       if (field === 'reps') {
-        return { ...s, reps: rawValue === '' ? '' : Number(rawValue) };
+        return { ...s, reps: rawValue === '' ? ('' as const) : Number(rawValue) };
       }
       if (field === 'done') {
         const nextDone = !s.done;
